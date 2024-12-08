@@ -1,107 +1,154 @@
--- Aurora X Internal Executor GUI
+-- Services
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
 
--- Create Main GUI Container
+-- Create the ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AuroraXInternal"
-ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.Name = "ModernGUI"
+ScreenGui.Parent = game.CoreGui
 
--- Function to Create a UI Element
-local function createUIElement(class, properties, parent)
-    local element = Instance.new(class)
-    for prop, value in pairs(properties) do
-        element[prop] = value
-    end
-    element.Parent = parent
-    return element
+-- Create the Toggle Button
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 40, 0, 20)
+ToggleButton.Position = UDim2.new(0.5, -20, 0, 10)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Text = "T"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextSize = 14
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.Parent = ScreenGui
+
+-- Create the Main Frame with Transparency
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 450, 0, 300)
+Frame.Position = UDim2.new(0.5, -225, 0.5, -150)
+Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Frame.BackgroundTransparency = 0.4  -- Make the background slightly transparent
+Frame.BorderSizePixel = 0
+Frame.Visible = true
+Frame.Parent = ScreenGui
+
+-- Create the Title Label
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Title.BorderSizePixel = 0
+Title.Text = "Aurora X Internal"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+Title.Font = Enum.Font.SourceSansBold
+Title.Parent = Frame
+
+-- Create the TextBox for Scripts
+local TextBox = Instance.new("TextBox")
+TextBox.Size = UDim2.new(1, -20, 0.7, -10)
+TextBox.Position = UDim2.new(0, 10, 0, 40)
+TextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+TextBox.BorderSizePixel = 0
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextSize = 14
+TextBox.Font = Enum.Font.Code
+TextBox.Text = ""
+TextBox.MultiLine = true
+TextBox.ClearTextOnFocus = false
+TextBox.Parent = Frame
+
+-- Create the Buttons Holder
+local ButtonHolder = Instance.new("Frame")
+ButtonHolder.Size = UDim2.new(1, -20, 0, 40)
+ButtonHolder.Position = UDim2.new(0, 10, 0.75, 0)
+ButtonHolder.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ButtonHolder.BackgroundTransparency = 0.5 -- Slight transparency for the button holder
+ButtonHolder.BorderSizePixel = 0
+ButtonHolder.Parent = Frame
+
+-- Create the Execute Button
+local ExecuteButton = Instance.new("TextButton")
+ExecuteButton.Size = UDim2.new(0.3, 0, 1, 0)
+ExecuteButton.Position = UDim2.new(0, 0, 0, 0)
+ExecuteButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ExecuteButton.BackgroundTransparency = 0.3 -- Slight transparency
+ExecuteButton.BorderSizePixel = 0
+ExecuteButton.Text = "Execute"
+ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExecuteButton.TextSize = 14
+ExecuteButton.Font = Enum.Font.SourceSansBold
+ExecuteButton.Parent = ButtonHolder
+
+-- Create the Clear Button
+local ClearButton = Instance.new("TextButton")
+ClearButton.Size = UDim2.new(0.3, 0, 1, 0)
+ClearButton.Position = UDim2.new(0.35, 0, 0, 0)
+ClearButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ClearButton.BackgroundTransparency = 0.3 -- Slight transparency
+ClearButton.BorderSizePixel = 0
+ClearButton.Text = "Clear"
+ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClearButton.TextSize = 14
+ClearButton.Font = Enum.Font.SourceSansBold
+ClearButton.Parent = ButtonHolder
+
+-- Create the Script Hub Button
+local ScriptHubButton = Instance.new("TextButton")
+ScriptHubButton.Size = UDim2.new(0.3, 0, 1, 0)
+ScriptHubButton.Position = UDim2.new(0.7, 0, 0, 0)
+ScriptHubButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ScriptHubButton.BackgroundTransparency = 0.3 -- Slight transparency
+ScriptHubButton.BorderSizePixel = 0
+ScriptHubButton.Text = "Script Hub"
+ScriptHubButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ScriptHubButton.TextSize = 14
+ScriptHubButton.Font = Enum.Font.SourceSansBold
+ScriptHubButton.Parent = ButtonHolder
+
+-- Create UIStroke for glowing effect
+local function createGlowEffect(button)
+    local glow = Instance.new("UIStroke")
+    glow.Parent = button
+    glow.Thickness = 4
+    glow.Transparency = 0.5
+    glow.Color = Color3.fromRGB(255, 255, 255)  -- White glow color
+    glow.Enabled = false
+    return glow
 end
 
--- Small Toggle Button
-local ToggleButton = createUIElement("TextButton", {
-    Size = UDim2.new(0, 40, 0, 20),
-    Position = UDim2.new(0.5, -20, 0, 10),
-    BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    Text = "T",
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 14,
-    Font = Enum.Font.SourceSansBold,
-}, ScreenGui)
+-- Add glow effects to buttons
+local executeGlow = createGlowEffect(ExecuteButton)
+local clearGlow = createGlowEffect(ClearButton)
+local scriptHubGlow = createGlowEffect(ScriptHubButton)
 
--- Main Frame
-local Frame = createUIElement("Frame", {
-    Size = UDim2.new(0, 450, 0, 300),
-    Position = UDim2.new(0.5, -225, 0.5, -150),
-    BackgroundColor3 = Color3.fromRGB(25, 25, 25),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    Visible = true,
-}, ScreenGui)
+-- Glowing Effect Functionality
+local function applyGlow(glow)
+    glow.Enabled = true
+end
 
--- Title Label
-createUIElement("TextLabel", {
-    Size = UDim2.new(1, 0, 0, 30),
-    BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    Text = "Aurora X Internal",
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 18,
-    Font = Enum.Font.SourceSansBold,
-}, Frame)
+local function removeGlow(glow)
+    glow.Enabled = false
+end
 
--- Textbox for Scripts
-local TextBox = createUIElement("TextBox", {
-    Size = UDim2.new(1, -20, 0.7, -10),
-    Position = UDim2.new(0, 10, 0, 40),
-    BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 14,
-    Font = Enum.Font.Code,
-    Text = "",
-    MultiLine = true,
-    ClearTextOnFocus = false,
-}, Frame)
+-- Add glow effect when mouse enters and remove it when mouse leaves
+ExecuteButton.MouseEnter:Connect(function()
+    applyGlow(executeGlow)
+end)
+ExecuteButton.MouseLeave:Connect(function()
+    removeGlow(executeGlow)
+end)
 
--- Buttons Section
-local ButtonHolder = createUIElement("Frame", {
-    Size = UDim2.new(1, -20, 0, 40),
-    Position = UDim2.new(0, 10, 0.75, 0),
-    BackgroundColor3 = Color3.fromRGB(25, 25, 25),
-}, Frame)
+ClearButton.MouseEnter:Connect(function()
+    applyGlow(clearGlow)
+end)
+ClearButton.MouseLeave:Connect(function()
+    removeGlow(clearGlow)
+end)
 
-local ExecuteButton = createUIElement("TextButton", {
-    Size = UDim2.new(0.3, 0, 1, 0),
-    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    Text = "Execute",
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 14,
-    Font = Enum.Font.SourceSansBold,
-}, ButtonHolder)
-
-local ClearButton = createUIElement("TextButton", {
-    Size = UDim2.new(0.3, 0, 1, 0),
-    Position = UDim2.new(0.35, 0, 0, 0),
-    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    Text = "Clear",
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 14,
-    Font = Enum.Font.SourceSansBold,
-}, ButtonHolder)
-
-local ScriptHubButton = createUIElement("TextButton", {
-    Size = UDim2.new(0.3, 0, 1, 0),
-    Position = UDim2.new(0.7, 0, 0, 0),
-    BackgroundColor3 = Color3.fromRGB(40, 40, 40),
-    BorderColor3 = Color3.fromRGB(80, 80, 80),
-    Text = "Script Hub",
-    TextColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 14,
-    Font = Enum.Font.SourceSansBold,
-}, ButtonHolder)
+ScriptHubButton.MouseEnter:Connect(function()
+    applyGlow(scriptHubGlow)
+end)
+ScriptHubButton.MouseLeave:Connect(function()
+    removeGlow(scriptHubGlow)
+end)
 
 -- Draggable Functionality
 local isDragging = false
@@ -131,31 +178,34 @@ Frame.InputChanged:Connect(function(input)
     end
 end)
 
--- Toggle GUI Visibility
+-- Toggle GUI Visibility with Left Control or Toggle Button
 local GuiVisible = true
+local ToggleKey = Enum.KeyCode.LeftControl
 
 local function ToggleGUI()
     GuiVisible = not GuiVisible
     Frame.Visible = GuiVisible
 end
 
+-- Toggle Button Click Functionality
 ToggleButton.MouseButton1Click:Connect(function()
     ToggleGUI()
 end)
 
+-- Toggle GUI with Left Control Key
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
+    if not gameProcessed and input.KeyCode == ToggleKey then
         ToggleGUI()
     end
 end)
 
--- Button Functionalities
+-- Button Functionality
 ExecuteButton.MouseButton1Click:Connect(function()
     local success, err = pcall(function()
         loadstring(TextBox.Text)()
     end)
     if not success then
-        warn("[Aurora X Internal]: Error executing script: " .. err)
+        warn("Error executing script: " .. err)
     end
 end)
 
@@ -168,11 +218,11 @@ ScriptHubButton.MouseButton1Click:Connect(function()
         loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-ScriptHub-V3-Best-Mobile-ScriptHub-Keyless-Xeno-Support-22191"))()
     end)
     if not success then
-        warn("[Aurora X Internal]: Error loading Script Hub: " .. err)
+        warn("Error loading Script Hub: " .. err)
     end
 end)
 
--- Prevent GUI from Deletion on Character Reset
+-- Prevent GUI from being deleted on death
 LocalPlayer.CharacterAdded:Connect(function()
     ScreenGui.Parent = game.CoreGui
 end)
